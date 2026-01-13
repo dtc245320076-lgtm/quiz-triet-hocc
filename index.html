@@ -2,120 +2,200 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8">
-<title>Trắc nghiệm Triết học Mác – Lênin</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Quiz Triết học Mác - Lênin</title>
 <style>
-body{margin:0;font-family:Segoe UI,Arial;background:#eef2f7}
-.container{max-width:950px;margin:40px auto;padding:20px}
-.card{background:#fff;border-radius:14px;padding:25px;box-shadow:0 10px 30px rgba(0,0,0,.1)}
-.header{display:flex;justify-content:space-between;align-items:center}
-.progress{width:60%;height:8px;background:#ddd;border-radius:8px;overflow:hidden}
-.progress-bar{height:100%;width:0;background:#2563eb}
-.answer button{width:100%;padding:12px;margin:6px 0;border-radius:8px;border:1px solid #ddd;background:#f9fafb;font-size:15px;cursor:pointer;text-align:left}
-.answer button:hover{background:#eef2ff}
-.correct{background:#16a34a!important;color:#fff}
-.wrong{background:#dc2626!important;color:#fff}
-.nav{display:flex;justify-content:space-between;margin-top:15px}
-.nav button{padding:10px 22px;border:none;border-radius:8px;font-size:15px;cursor:pointer}
-.next{background:#2563eb;color:#fff}
-.prev{background:#e5e7eb}
-.result{font-size:22px;font-weight:bold;text-align:center;margin-top:15px}
-table{width:100%;margin-top:20px;border-collapse:collapse}
-td{padding:8px;border-bottom:1px solid #eee}
-.ok{color:#16a34a;font-weight:bold}
-.fail{color:#dc2626;font-weight:bold}
+body{font-family:Arial;background:#f4f6f8;margin:0}
+.container{max-width:900px;margin:auto;padding:20px}
+h1{text-align:center}
+.question{background:#fff;padding:15px;margin-bottom:15px;border-radius:8px}
+.options label{display:block;margin:6px 0;cursor:pointer}
+.result{font-weight:bold;margin-top:8px}
+.correct{color:green}
+.wrong{color:red}
+button{padding:10px 20px;border:none;border-radius:6px;background:#2563eb;color:#fff;font-size:16px;cursor:pointer}
+.summary{background:#e0f2fe;padding:15px;border-radius:8px}
 </style>
 </head>
+
 <body>
-
 <div class="container">
-<div class="card">
-<div class="header">
-<h2 id="title"></h2>
-<div class="progress"><div class="progress-bar" id="bar"></div></div>
-</div>
+<h1>📘 Quiz Triết học Mác – Lênin (29 câu)</h1>
 
-<div id="answers" class="answer"></div>
+<div id="quiz"></div>
 
-<div class="nav">
-<button class="prev" onclick="prev()">⬅ Trước</button>
-<button class="next" onclick="next()">Tiếp ➡</button>
-</div>
+<button onclick="submitQuiz()">Nộp bài</button>
 
-<div id="result"></div>
-<div id="stat"></div>
-</div>
+<div id="summary" class="summary"></div>
 </div>
 
 <script>
-const quiz=[
-{q:"Triết học ra đời sớm nhất ở đâu?",a:["Ấn Độ, Trung Quốc, Hy Lạp","Ai Cập, Hy Lạp, Ấn Độ","Ấn Độ, Châu Phi, Nga","Ai Cập, Ấn Độ, Trung Quốc"],c:0},
-{q:"Triết học ra đời từ đâu?",a:["Từ thực tiễn, do nhu cầu của thực tiễn","Từ suy tư cá nhân","Từ sáng tạo chủ quan","Từ ý muốn chủ quan"],c:0},
-{q:"Triết học Mác – Lênin là gì?",a:["Khoa học nghiên cứu con người","Thế giới quan và phương pháp luận khoa học, cách mạng","Hệ thống quan điểm duy vật biện chứng","Khoa học tự nhiên"],c:1},
-{q:"Hình thức của chủ nghĩa duy tâm là:",a:["Duy tâm chất phác & siêu hình","Duy tâm khách quan & chủ quan","Duy tâm biện chứng & siêu hình","Duy tâm kinh nghiệm"],c:1},
-{q:"Phát minh khoa học tự nhiên TK XIX tạo cơ sở cho:",a:["Tư duy siêu hình","Phép biện chứng duy vật","Phép biện chứng tự phát","Tư duy thần bí"],c:1},
-{q:"Bản chất CMCN khoa học – công nghệ hiện đại là:",a:["Cơ sở lý luận","Tăng dân số","Cải biến lực lượng sản xuất dựa trên tri thức","Phát triển nông nghiệp"],c:2},
-{q:"Vai trò triết học Mác – Lênin với xã hội hiện đại:",a:["Hợp thức hóa CNTB","Không thúc đẩy hợp tác","Phân tích xu hướng phát triển xã hội khoa học","Bảo vệ CNTB"],c:2},
-{q:"Vận dụng giáo điều triết học Mác – Lênin có ảnh hưởng phát triển CNXH?",a:["Đúng","Sai"],c:1},
-{q:"Triết học Mác – Lênin có giá trị định hướng vì:",a:["Kết hợp tri thức triết học & khoa học","Giúp dự báo xu hướng chung","Thực tiễn là yếu tố duy nhất","Luôn luôn đúng"],c:1},
-{q:"Vận dụng sai lệch triết học Mác – Lênin dẫn đến:",a:["Giáo điều, xơ cứng","Khủng hoảng CNXH","Phát triển kinh tế","Hợp tác quốc tế"],c:0},
-{q:"Quan hệ triết học Mác – Lênin & KH-CN:",a:["Làm triết học lạc hậu","Là sản phẩm KH-CN","Cơ sở lý luận – phương pháp luận","Chỉ truyền bá tri thức"],c:2},
-{q:"Cơ sở đổi mới của ĐCSVN là:",a:["Kinh nghiệm cá nhân","Phép biện chứng duy vật","Chỉ phương pháp luận","Chỉ thế giới quan"],c:1},
-{q:"Chức năng thế giới quan của triết học là:",a:["Định hướng nhận thức","Phát triển kỹ thuật","Tạo lợi nhuận","Giải trí"],c:0},
-{q:"Đổi mới XHCN ở Việt Nam:",a:["Cơ sở thế giới quan","Giúp xác định con đường","Cải biến sự vật","Đổi mới tư duy lý luận"],c:3},
-{q:"Điều kiện KT–XH ra đời triết học Mác:",a:["Thực tiễn giai cấp vô sản","Tư bản phát triển","Thực tiễn tư sản","Giai cấp tư sản"],c:0},
-{q:"Triết học ra đời khi:",a:["Xã hội phân giai cấp","Có lao động trí óc","Tư duy khái quát cao","Cả A và C"],c:3},
-{q:"Triết học Mác khắc phục hạn chế duy vật cũ?",a:["Đúng","Sai"],c:0},
-{q:"Cơ sở ra đời triết học Mác:",a:["Duy vật siêu hình","Phong trào giải phóng","Giai cấp vô sản","CNTB phát triển"],c:2},
-{q:"Cách mạng trong triết học của Mác là:",a:["Mở rộng duy vật siêu hình","Khắc phục duy tâm","Kế thừa tư duy nhân loại","Phủ định khoa học"],c:1},
-{q:"Ông Bụt trong cổ tích Việt Nam là:",a:["Thần thoại","Cổ đại","Duy tâm","Thần thánh"],c:0},
-{q:"Triết học Mác – Lênin là cơ sở đổi mới VN vì:",a:["Học thuyết duy nhất","Phép biện chứng duy vật","Giải đáp con đường XHCN","Lãnh đạo ưa chuộng"],c:2},
-{q:"Triết học Mác – Lênin phân tích xã hội vì:",a:["Nền tảng tư tưởng","Kết hợp khoa học","Cải biến lực lượng SX","Phản ánh bản chất & quy luật"],c:3},
-{q:"Hạn chế vận dụng trước đây:",a:["Đánh giá quốc tế","Máy móc, giáo điều","Gắn lý luận & thực tiễn","Luôn đổi mới"],c:1},
-{q:"Khẳng định SAI về triết học Mác:",a:["Thay thế khoa học cụ thể","Gắn với KH tự nhiên","Khoa học của mọi khoa học","Thống nhất duy vật & biện chứng"],c:0},
-{q:"Đối tượng nghiên cứu của triết học:",a:["Quy luật tự nhiên","Quy luật TN–XH–TD","Quy luật xã hội","Quy luật chung nhất"],c:3},
-{q:"Vai trò trong toàn cầu hóa:",a:["Phân tích xu hướng toàn cầu","Chống toàn cầu hóa","Bảo vệ văn hóa ngoại lai","Thúc đẩy toàn cầu hóa"],c:0},
-{q:"Vai trò trong CMCN 4.0:",a:["Hạ thấp khoa học","Hạ thấp triết học","Đấu tranh giai cấp","Cơ sở phương pháp luận"],c:3},
-{q:"Chức năng triết học Mác – Lênin:",a:["Thế giới quan","Phương pháp luận","Khoa học của mọi KH","Cầu nối KH"],c:1}
+const questions = [
+{q:"Câu 1: Triết học ra đời sớm nhất ở đâu?",type:"single",
+o:["Ấn Độ, Trung Quốc, Hy Lạp","Ai Cập, Hy Lạp, Ấn Độ","Ấn Độ, Châu Phi, Nga","Ai Cập, Ấn Độ, Trung Quốc"],
+a:[0]},
+
+{q:"Câu 2: Triết học ra đời từ đâu?",type:"single",
+o:["Từ thực tiễn, do nhu cầu của thực tiễn","Từ sự suy tư của con người","Từ sự sáng tạo của nhà tư tưởng","Từ ý muốn chủ quan"],
+a:[0]},
+
+{q:"Câu 3: Triết học Mác – Lênin là gì? (chọn 2)",type:"multi",
+o:["Nghiên cứu con người","Thế giới quan & phương pháp luận khoa học, cách mạng",
+"Hệ thống quan điểm duy vật biện chứng","Nghiên cứu quy luật tự nhiên"],
+a:[1,2]},
+
+{q:"Câu 4: Các hình thức của chủ nghĩa duy tâm là:",type:"single",
+o:["Duy tâm chất phác & siêu hình","Duy tâm biện chứng & khách quan",
+"Siêu hình & biện chứng","Khách quan & chủ quan"],
+a:[3]},
+
+{q:"Câu 5: Phát minh khoa học TK XIX cung cấp cơ sở cho:",type:"single",
+o:["Tư duy siêu hình","Phát triển tư duy biện chứng khoa học",
+"Phép biện chứng tự phát","Tinh thần bí duy vật"],
+a:[1]},
+
+{q:"Câu 6: Bản chất CMCN KH–CN hiện đại:",type:"single",
+o:["Cơ sở lý luận","Tăng dân số",
+"Cải biến lực lượng sản xuất dựa trên tri thức","Phát triển nông nghiệp"],
+a:[2]},
+
+{q:"Câu 7: Vai trò triết học M-L trong xã hội hiện đại:",type:"single",
+o:["Hợp thức hóa hợp tác","Không thúc đẩy hợp tác",
+"Phân tích xu hướng phát triển xã hội","Bảo vệ CNTB"],
+a:[2]},
+
+{q:"Câu 8: Nhận định đúng/sai:",type:"tf",
+o:["Giáo điều KHÔNG ảnh hưởng CNXH",
+"Máy móc KHÔNG gây khủng hoảng",
+"Triết học M-L định hướng phát triển xã hội",
+"Là nền tảng tư tưởng đổi mới"],
+a:[1,1,0,0]},
+
+{q:"Câu 9: Giá trị định hướng của triết học M-L:",type:"single",
+o:["Kết hợp tri thức","Dự báo xu hướng, tránh sai lầm",
+"Tri thức thực tiễn là duy nhất","Luôn đúng"],
+a:[1]},
+
+{q:"Câu 10: Vận dụng sai dẫn đến (chọn 2):",type:"multi",
+o:["Giáo điều","Khủng hoảng CNXH","Hợp tác quốc tế","Phát triển kinh tế"],
+a:[0,1]},
+
+{q:"Câu 11: Quan hệ triết học & CMCN:",type:"single",
+o:["Lạc hậu","Sản phẩm CMCN",
+"Cơ sở lý luận – phương pháp luận","Cơ sở truyền bá"],
+a:[2]},
+
+{q:"Câu 12: Cơ sở đổi mới ở VN:",type:"single",
+o:["Kinh nghiệm cá nhân","Biện chứng duy vật M-L",
+"Chỉ phương pháp","Chỉ thế giới quan"],
+a:[1]},
+
+{q:"Câu 13: Chức năng triết học:",type:"single",
+o:["Định hướng nhận thức","Phát triển tư duy khoa học"],
+a:[0,1]},
+
+{q:"Câu 14: Đổi mới XHCN VN (chọn 2):",type:"multi",
+o:["Cơ sở phân tích xã hội","Nhận đường đi CNXH",
+"Cải biến sự vật","Mở đường bằng đổi mới tư duy"],
+a:[1,3]},
+
+{q:"Câu 15: Điều kiện KT-XH ra đời triết học M-L (2):",type:"multi",
+o:["Thực tiễn vô sản","PTTBCN","Thực tiễn tư sản","GCTS độc lập"],
+a:[0,1]},
+
+{q:"Câu 16: Điều kiện ra đời triết học (2):",type:"multi",
+o:["XH phân giai cấp & lao động trí óc",
+"Lao động trí óc","Phân giai cấp","Tư duy khái quát cao"],
+a:[0,3]},
+
+{q:"Câu 17: Nhận định đúng/sai:",type:"tf",
+o:["Khắc phục duy vật cũ","Thống nhất biện chứng & duy vật",
+"Mở rộng vào lịch sử","Kết hợp Hêghen & Phơi-ơ-bắc"],
+a:[0,0,0,1]},
+
+{q:"Câu 18: Cơ sở ra đời triết học Mác (2):",type:"multi",
+o:["Duy vật siêu hình","Giải phóng dân tộc",
+"Giai cấp vô sản","PTTBCN"],
+a:[2,3]},
+
+{q:"Câu 19: Cách mạng triết học Mác (2):",type:"multi",
+o:["Mở rộng duy vật","Khắc phục duy tâm",
+"Khắc phục siêu hình","Kế thừa tư duy"],
+a:[1,2]},
+
+{q:"Câu 20: Ông Bụt thể hiện:",type:"single",
+o:["Thần thoại","Cổ đại","Duy tâm","Thần thánh"],
+a:[0]},
+
+{q:"Câu 21: Cơ sở đổi mới VN (2):",type:"multi",
+o:["Học thuyết duy nhất",
+"Biện chứng duy vật","Tìm đường CNXH","Được ưa chuộng"],
+a:[1,2]},
+
+{q:"Câu 22: Vai trò phân tích XH hiện đại:",type:"single",
+o:["Nền tảng tư tưởng","Kết hợp tri thức",
+"Lực lượng SX","Phản ánh bản chất & quy luật"],
+a:[3]},
+
+{q:"Câu 23: Hạn chế vận dụng trước đây:",type:"single",
+o:["Đánh giá quốc tế","Giáo điều","Gắn thực tiễn","Phát triển lý luận"],
+a:[1]},
+
+{q:"Câu 24: Khẳng định sai (2):",type:"multi",
+o:["Thay thế khoa học","Gắn KH tự nhiên",
+"Khoa học của mọi khoa học","Thống nhất duy vật"],
+a:[1,2]},
+
+{q:"Câu 25: Đối tượng triết học:",type:"single",
+o:["Quy luật tự nhiên","Quy luật TN-XH-TD",
+"Quy luật xã hội","Quy luật chung nhất TN-XH-TD"],
+a:[3]},
+
+{q:"Câu 26: Vai trò toàn cầu hóa:",type:"single",
+o:["Phân tích xu hướng","Bảo vệ văn hóa","Chống toàn cầu","Thúc đẩy"],
+a:[0]},
+
+{q:"Câu 27: Vai trò trong CMCN:",type:"single",
+o:["Hạ khoa học","Hạ triết học",
+"Đấu tranh giai cấp","Cơ sở lý luận – PPL"],
+a:[3]},
+
+{q:"Câu 28: Chức năng triết học (2):",type:"multi",
+o:["Thế giới quan","Phương pháp luận",
+"Khoa học khoa học","Cầu nối"],
+a:[0,1]},
+
+{q:"Câu 29: Vai trò triết học M-L:",type:"single",
+o:["Cơ sở CNXH thế giới","Bảo vệ CNTB",
+"Công cụ toàn cầu","Tri thức thuần túy"],
+a:[0]}
 ];
 
-let i=0,score=0,answered=[];
+const quiz=document.getElementById("quiz");
 
-function load(){
-let q=quiz[i];
-title.innerText=`Câu ${i+1}/29: ${q.q}`;
-answers.innerHTML="";
-q.a.forEach((t,idx)=>{
-let b=document.createElement("button");
-b.innerText=t;
-b.onclick=()=>check(b,idx);
-answers.appendChild(b);
+questions.forEach((q,i)=>{
+let html=`<div class="question"><b>${q.q}</b><div class="options">`;
+q.o.forEach((op,j)=>{
+const type=q.type==="multi"?"checkbox":"radio";
+html+=`<label><input type="${type}" name="q${i}" value="${j}"> ${op}</label>`;
 });
-bar.style.width=((i+1)/quiz.length*100)+"%";
-}
-
-function check(btn,idx){
-if(answered[i]!=null)return;
-answered[i]=idx===quiz[i].c;
-if(answered[i]){btn.className="correct";score++}
-else btn.className="wrong";
-[...answers.children].forEach(b=>b.disabled=true);
-}
-
-function next(){if(i<quiz.length-1){i++;load()}else finish()}
-function prev(){if(i>0){i--;load()}}
-
-function finish(){
-result.innerHTML=`🎉 Kết quả: ${score}/29 câu đúng`;
-let html="<table>";
-answered.forEach((r,idx)=>{
-html+=`<tr><td>Câu ${idx+1}</td><td class="${r?"ok":"fail"}">${r?"Đúng":"Sai"}</td></tr>`;
+html+=`</div><div class="result" id="r${i}"></div></div>`;
+quiz.innerHTML+=html;
 });
-html+="</table>";
-stat.innerHTML=html;
-}
 
-load();
+function submitQuiz(){
+let score=0;
+questions.forEach((q,i)=>{
+const checked=[...document.querySelectorAll(`input[name=q${i}]:checked`)].map(x=>+x.value).sort();
+const ans=[...q.a].sort();
+const ok=JSON.stringify(checked)===JSON.stringify(ans);
+document.getElementById("r"+i).innerHTML= ok?
+"<span class='correct'>✅ Đúng</span>":
+"<span class='wrong'>❌ Sai – Đáp án đúng: "+ans.map(x=>String.fromCharCode(65+x)).join(", ")+"</span>";
+if(ok) score++;
+});
+document.getElementById("summary").innerHTML=
+`🎯 Điểm: <b>${score}/${questions.length}</b>`;
+}
 </script>
 </body>
 </html>

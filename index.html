@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Quiz Triết học</title>
+  <style>
+    body { font-family: Arial; background: #f4f6f8; padding: 20px; }
+    .quiz { background: #fff; padding: 20px; border-radius: 8px; max-width: 800px; margin: auto; }
+    h2 { color: #333; }
+    button { margin: 5px 0; padding: 10px; width: 100%; }
+    .correct { background: #4caf50; color: #fff; }
+    .wrong { background: #f44336; color: #fff; }
+  </style>
+</head>
+<body>
+
+<div class="quiz">
+  <h2>Câu 1: Triết học ra đời sớm nhất ở đâu?</h2>
+  <button onclick="check(this,false)">A. Ấn Độ, Trung Quốc, Hy Lạp</button>
+  <button onclick="check(this,false)">B. Ai Cập, Hy Lạp, Ấn Độ</button>
+  <button onclick="check(this,false)">C. Ấn Độ, Châu Phi, Nga</button>
+  <button onclick="check(this,true)">D. Ai Cập, Ấn Độ, Trung Quốc</button>
+</div>
+
+<script>
+function check(btn, correct) {
+  if (correct) {
+    btn.className = "correct";
+    btn.innerHTML += " ✔ Đúng";
+  } else {
+    btn.className = "wrong";
+    btn.innerHTML += " ✘ Sai";
+  }
+  let buttons = btn.parentNode.querySelectorAll("button");
+  buttons.forEach(b => b.disabled = true);
+}
+</script>
+
+</body>
+</html>
